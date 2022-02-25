@@ -1,0 +1,62 @@
+create database demo;
+use demo;
+create table products (
+    id int auto_increment primary key,
+    productCode varchar(50),
+    productName varchar(50),
+    productPrice double,
+    productAmount int,
+    productDescription varchar(50),
+    productStatus bit
+);
+insert into products (productCode, productName, productPrice, productAmount, productDescription, productStatus) VALUES
+('001','Iphone13',1000,100,'New',1),
+('002','Iphone10',900,60,'Old',0),
+('003','Iphone11',950,80,'New',1);
+alter table products add unique index code(productCode);
+alter table products add index idx2(productName, productPrice);
+EXPLAIN SELECT * FROM products WHERE productCode = '001';
+SELECT * FROM products WHERE productCode = '001';
+ALTER TABLE products DROP INDEX CODE;
+SELECT * FROM products WHERE productCode = '001';
+CREATE VIEW VIEW1 AS
+    SELECT  productCode, productName, productPrice, productStatus
+FROM products;
+SELECT * FROM VIEW1;
+CREATE OR REPLACE VIEW VIEW1 AS
+SELECT  productCode, productName, productPrice, productStatus
+FROM products
+WHERE productCode = '002';
+SELECT * FROM demo.VIEW1;
+DROP VIEW VIEW1;
+DELIMITER //
+create procedure find_all_products()
+begin
+    select * from products;
+end //
+delimiter ;
+call find_all_products;
+
+delimiter //
+create procedure insertIn(IN input_code varchar(50),IN input_name varchar(50))
+begin
+    insert into products(productCode,productName) values (input_code,input_name);
+end //
+delimiter ;
+call insertIn('004','Phone14');
+# Tạo procedure sửa tên sản phẩm theo ID
+delimiter //
+create procedure updateByID(IN in_name varchar(50), IN in_id int)
+begin
+    update products set productName = in_name where id = in_id;
+end //
+delimiter ;
+call updateByID('IphoneX',2);
+# Tạo procedure xoá sản phẩm theo ID
+delimiter //
+create procedure deleterProduct(in in_id int)
+begin
+    delete from products where id = in_id;
+end //
+delimiter ;
+call deleterProduct(7);
